@@ -1,7 +1,8 @@
-package model
+package main
 
 import (
 	"bytes"
+	"example/methods-interfaces/model"
 	"fmt"
 	"math"
 	"strconv"
@@ -101,7 +102,9 @@ func main() {
 
 	interfaceTest()
 
-	//person.printPerson()
-	p := Person{"A", 50}
-	fmt.Println("Person => ", p)
+	model.Println("Person => ", v)
+
+	model.PrintPerson()
+	//p := model.Person{"A", 50}
+	fmt.Println("Person => ", v)
 }
