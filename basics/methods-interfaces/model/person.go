@@ -7,6 +7,10 @@ type Person struct {
 	Age  int
 }
 
+func NewPerson(name string, age int) Person {
+	return Person{name, age}
+}
+
 func (p Person) String() string {
 	return fmt.Sprintf("%v (%v years)", p.Name, p.Age)
 }

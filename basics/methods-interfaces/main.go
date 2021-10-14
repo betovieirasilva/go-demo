@@ -105,6 +105,6 @@ func main() {
 	model.Println("Person => ", v)
 
 	model.PrintPerson()
-	//p := model.Person{"A", 50}
-	fmt.Println("Person => ", v)
+	p := model.NewPerson("A", 50)
+	fmt.Println("Person => ", p)
 }
