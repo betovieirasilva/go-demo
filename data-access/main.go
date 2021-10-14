@@ -9,17 +9,10 @@ import (
 	"strconv"
 
 	"example/data-access/conf"
+	"example/data-access/model"
 
 	"github.com/gin-gonic/gin"
 )
-
-//vars
-type Album struct {
-	ID     int64   `json:"id"`
-	Title  string  `json:"title"`
-	Artist string  `json:"artist"`
-	Price  float32 `json:"price"`
-}
 
 var db *sql.DB
 
@@ -74,12 +67,12 @@ func deleteAlbumById(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, gin.H{"message": "Registro excluído com sucesso!"})
 }
 
-func removeIndex(s []Album, index int) []Album {
+func removeIndex(s []model.Album, index int) []model.Album {
 	return append(s[:index], s[index+1:]...)
 }
 
 func postAlbums(c *gin.Context) {
-	var newAlbum Album
+	var newAlbum model.Album
 
 	//faz o paser do Json e alimenta na variável newAlbum
 	if err := c.BindJSON(&newAlbum); err != nil {
@@ -96,8 +89,8 @@ func postAlbums(c *gin.Context) {
 }
 
 //DB functions
-func albumById(id int64) (Album, error) {
-	var album Album
+func albumById(id int64) (model.Album, error) {
+	var album model.Album
 
 	row := db.QueryRow("SELECT * from album WHERE id = ?", id)
 	if err := row.Scan(&album.ID, &album.Title, &album.Artist, &album.Price); err != nil {
@@ -110,8 +103,8 @@ func albumById(id int64) (Album, error) {
 	return album, nil
 }
 
-func albumsAll() ([]Album, error) {
-	var albums []Album
+func albumsAll() ([]model.Album, error) {
+	var albums []model.Album
 
 	rows, err := db.Query("SELECT * FROM album WHERE 1 = ? ORDER BY id ASC", 1) //param = 1 apenas para facilitar os testes com lista vazia (informe 2 para lista vazia)
 	if err != nil {
@@ -122,7 +115,7 @@ func albumsAll() ([]Album, error) {
 	empty := true
 	for rows.Next() { //o mesmo que while em outras linguagens
 		empty = false
-		var album Album
+		var album model.Album
 		if err := rows.Scan(&album.ID, &album.Title, &album.Artist, &album.Price); err != nil {
 			return nil, fmt.Errorf("Erro ao buscar a lista de albums %v", err)
 		}
@@ -140,7 +133,7 @@ func albumsAll() ([]Album, error) {
 	return albums, nil
 }
 
-func insertAlbum(album Album) (int64, error) {
+func insertAlbum(album model.Album) (int64, error) {
 	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao inserir um registro em album %v", err)
@@ -153,7 +146,7 @@ func insertAlbum(album Album) (int64, error) {
 	return id, nil
 }
 
-func updateAlbum(album Album) (int64, error) {
+func updateAlbum(album model.Album) (int64, error) {
 	result, err := db.Exec("UPDATE album set title = ?, artist = ?, price = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao atualizar um registro em album %v", err)
@@ -171,7 +164,7 @@ func updateAlbum(album Album) (int64, error) {
 	return album.ID, nil //retorn album.ID por padrão para facilitar seu uso no save
 }
 
-func saveAlbum(album Album) (int64, error) {
+func saveAlbum(album model.Album) (int64, error) {
 	if album.ID != 0 { //primitive value is zero by default
 		return updateAlbum(album)
 	}
