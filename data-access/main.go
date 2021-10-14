@@ -5,13 +5,12 @@ package main
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
-	"os"
 	"strconv"
 
+	"example/data-access/conf"
+
 	"github.com/gin-gonic/gin"
-	"github.com/go-sql-driver/mysql"
 )
 
 //vars
@@ -21,13 +20,6 @@ type Album struct {
 	Artist string  `json:"artist"`
 	Price  float32 `json:"price"`
 }
-
-/*
-var albums = []Album{
-	{ID: 1, Title: "Blue Train", Artist: "John Coltrane", Price: 56.99},
-	{ID: 2, Title: "Jeru", Artist: "Gerry", Price: 56.99},
-	{ID: 3, Title: "Sarah", Artist: "Sarah", Price: 56.99},
-}*/
 
 var db *sql.DB
 
@@ -205,37 +197,7 @@ func deleteAlbum(id int64) (bool, error) {
 }
 
 func main() {
-	// Create connection
-	//From => https://pkg.go.dev/github.com/go-sql-driver/mysql#Config
-	cfg := mysql.Config{
-		// @see export properties, get with os.Getenv("DBUSER"), etc
-		//$ export DBUSER=root
-		//$ export DBPASS=1
-		User:   os.Getenv("DBUSER"),
-		Passwd: os.Getenv("DBPASS"),
-		//User:   "root",
-		//Passwd: "1",
-		Net:    "tcp",
-		Addr:   "127.0.0.1:3306",
-		DBName: "recordings",
-		// connector.go:95: could not use requested auth plugin 'mysql_native_password': this user requires mysql native password authentication.
-		// 2021/10/14 09:40:00 this user requires mysql native password authentication.
-		AllowNativePasswords: true,
-	}
-
-	// Get a database handle.
-	var err error
-	db, err = sql.Open("mysql", cfg.FormatDSN())
-	if err != nil {
-		log.Fatal(err) //exit
-	}
-
-	pingErr := db.Ping()
-	if pingErr != nil {
-		log.Fatal(pingErr) //exit
-		return
-	}
-	fmt.Println("Connected!")
+	db = conf.Connection()
 
 	//Routers da aplicação
 	router := gin.Default()
