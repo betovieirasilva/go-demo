@@ -1,12 +1,10 @@
-package main
+package model
 
 import (
 	"bytes"
 	"fmt"
 	"math"
 	"strconv"
-
-	"github.com/betovieirasilva/go-demo/basics/methods-interfaces/model"
 )
 
 type Vertex struct {
@@ -104,6 +102,6 @@ func main() {
 	interfaceTest()
 
 	//person.printPerson()
-	p := model.Person{"A", 50}
+	p := Person{"A", 50}
 	fmt.Println("Person => ", p)
 }
