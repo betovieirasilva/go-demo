@@ -13,6 +13,10 @@ type Vertex struct {
 
 type MyFloat float64
 
+/*
+Um tipo implementa uma interface através da implementação dos métodos. Não há declaração explícita de intenções, não há palavra-chave "implements".
+Interfaces implícitas dissociam-se da definição de uma interface de sua implementação, que pode então aparecer em qualquer pacote sem pré-arranjamento.
+*/
 type Abser interface {
 	Abs() float64
 }
@@ -96,4 +100,6 @@ func main() {
 	fmt.Println("\nTeste B:\n", v.ToString())
 
 	interfaceTest()
+
+	printPerson()
 }
