@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	albumdao "example/data-access/dao"
-	"example/data-access/model"
+	entity "example/data-access/entity"
 
 	"github.com/gin-gonic/gin"
 )
@@ -68,7 +68,7 @@ func DeleteAlbumById(c *gin.Context) {
 }
 
 func PostAlbums(c *gin.Context) {
-	var newAlbum model.Album
+	var newAlbum entity.Album
 
 	//faz o paser do Json e alimenta na variável newAlbum
 	if err := c.BindJSON(&newAlbum); err != nil {

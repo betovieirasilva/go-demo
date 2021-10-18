@@ -4,11 +4,11 @@ import (
 	"database/sql"
 	"fmt"
 
-	"example/data-access/model"
+	entity "example/data-access/entity"
 )
 
-func FindAlbumById(db *sql.DB, id int64) (model.Album, error) {
-	var album model.Album
+func FindAlbumById(db *sql.DB, id int64) (entity.Album, error) {
+	var album entity.Album
 
 	row := db.QueryRow("SELECT * from album WHERE id = ?", id)
 	if err := row.Scan(&album.ID, &album.Title, &album.Artist, &album.Price); err != nil {
@@ -21,8 +21,8 @@ func FindAlbumById(db *sql.DB, id int64) (model.Album, error) {
 	return album, nil
 }
 
-func FindAllAlbums(db *sql.DB) ([]model.Album, error) {
-	var albums []model.Album
+func FindAllAlbums(db *sql.DB) ([]entity.Album, error) {
+	var albums []entity.Album
 
 	rows, err := db.Query("SELECT * FROM album WHERE 1 = ? ORDER BY id ASC", 1) //param = 1 apenas para facilitar os testes com lista vazia (informe 2 para lista vazia)
 	if err != nil {
@@ -33,7 +33,7 @@ func FindAllAlbums(db *sql.DB) ([]model.Album, error) {
 	empty := true
 	for rows.Next() { //o mesmo que while em outras linguagens
 		empty = false
-		var album model.Album
+		var album entity.Album
 		if err := rows.Scan(&album.ID, &album.Title, &album.Artist, &album.Price); err != nil {
 			return nil, fmt.Errorf("Erro ao buscar a lista de albums %v", err)
 		}
@@ -51,14 +51,14 @@ func FindAllAlbums(db *sql.DB) ([]model.Album, error) {
 	return albums, nil
 }
 
-func SaveAlbum(db *sql.DB, album model.Album) (int64, error) {
+func SaveAlbum(db *sql.DB, album entity.Album) (int64, error) {
 	if album.ID != 0 { //primitive value is zero by default
 		return UpdateAlbum(db, album)
 	}
 	return InsertAlbum(db, album)
 }
 
-func InsertAlbum(db *sql.DB, album model.Album) (int64, error) {
+func InsertAlbum(db *sql.DB, album entity.Album) (int64, error) {
 	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao inserir um registro em album %v", err)
@@ -71,7 +71,7 @@ func InsertAlbum(db *sql.DB, album model.Album) (int64, error) {
 	return id, nil
 }
 
-func UpdateAlbum(db *sql.DB, album model.Album) (int64, error) {
+func UpdateAlbum(db *sql.DB, album entity.Album) (int64, error) {
 	result, err := db.Exec("UPDATE album set title = ?, artist = ?, price = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao atualizar um registro em album %v", err)

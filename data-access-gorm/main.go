@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	albumapi "example/data-access/api"
+	albumController "example/data-access/controller"
 )
 
 var db *sql.DB
@@ -21,14 +21,14 @@ func main() {
 	dbGorm = conf.SetupDatabase()
 
 	db = conf.Connection()
-	albumapi.SetConnection(db)
+	albumController.SetConnection(db)
 
 	//Routers da aplicação
 	router := gin.Default()
-	router.GET("/albums", albumapi.GetAlbums)
-	router.GET("/albums/:id", albumapi.GetAlbumById)
-	router.DELETE("/albums/:id", albumapi.DeleteAlbumById)
-	router.POST("/albums", albumapi.PostAlbums)
+	router.GET("/albums", albumController.GetAlbums)
+	router.GET("/albums/:id", albumController.GetAlbumById)
+	router.DELETE("/albums/:id", albumController.DeleteAlbumById)
+	router.POST("/albums", albumController.PostAlbums)
 
 	router.Run("localhost:9001")
 }
