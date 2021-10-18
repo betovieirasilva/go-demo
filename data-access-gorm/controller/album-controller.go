@@ -28,69 +28,69 @@ func NewAlbumController(_db *sql.DB) AlbumController {
 	}
 }
 
-func (controller *albumController) GetAlbums(c *gin.Context) {
-	albums, err := albumDao.FindAllAlbums(controller.db)
+func (c *albumController) GetAlbums(context *gin.Context) {
+	albums, err := albumDao.FindAllAlbums(c.db)
 	if err != nil {
-		c.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, albums)
+	context.IndentedJSON(http.StatusOK, albums)
 }
 
-func (controller *albumController) GetAlbumById(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 0, 64)
+func (c *albumController) GetAlbumById(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 0, 64)
 
 	if err != nil {
 		//TODO: => log.Fatal vai derrubar a aplciação, então o correto não é lançlar o log.Fatal, mas tratar a exceção corretamente
 		//log.Fatal(err)
-		c.IndentedJSON(http.StatusFound, gin.H{"message": "Informe um ID válido para realizar a busca do album"})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": "Informe um ID válido para realizar a busca do album"})
 		return
 	}
 
-	album, errDb := albumDao.FindAlbumById(controller.db, id)
+	album, errDb := albumDao.FindAlbumById(c.db, id)
 	if errDb != nil {
 		msgErrorStr := errDb.Error() //pega a mensagem de erro retornada
-		c.IndentedJSON(http.StatusFound, gin.H{"message": msgErrorStr})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": msgErrorStr})
 		return
 	}
-	c.IndentedJSON(http.StatusOK, album)
+	context.IndentedJSON(http.StatusOK, album)
 }
 
-func (controller *albumController) DeleteAlbumById(c *gin.Context) {
-	id, err := strconv.ParseInt(c.Param("id"), 0, 64)
+func (c *albumController) DeleteAlbumById(context *gin.Context) {
+	id, err := strconv.ParseInt(context.Param("id"), 0, 64)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusFound, gin.H{"message": "Informe um ID válido para realizar a exclusão do album"})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": "Informe um ID válido para realizar a exclusão do album"})
 		return
 	}
 
-	deleted, err := albumDao.RemoveAlbum(controller.db, id)
+	deleted, err := albumDao.RemoveAlbum(c.db, id)
 
 	if err != nil {
-		c.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
 	}
 
 	if !deleted {
-		c.IndentedJSON(http.StatusFound, gin.H{"message": "Nenhum registro encontrado!"})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": "Nenhum registro encontrado!"})
 		return
 	}
-	c.IndentedJSON(http.StatusCreated, gin.H{"message": "Registro excluído com sucesso!"})
+	context.IndentedJSON(http.StatusCreated, gin.H{"message": "Registro excluído com sucesso!"})
 }
 
-func (controller *albumController) PostAlbums(c *gin.Context) {
+func (c *albumController) PostAlbums(context *gin.Context) {
 	var newAlbum entity.Album
 
 	//faz o paser do Json e alimenta na variável newAlbum
-	if err := c.BindJSON(&newAlbum); err != nil {
+	if err := context.BindJSON(&newAlbum); err != nil {
 		return
 	}
 
-	id, err := albumDao.SaveAlbum(controller.db, newAlbum)
+	id, err := albumDao.SaveAlbum(c.db, newAlbum)
 	if err != nil {
-		c.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
+		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
 	}
 	newAlbum.ID = id //atualiza o ID dentro do próprio objeto garantindo que no retorno o JSON será retornado com ele, no caso de INSERT
-	c.IndentedJSON(http.StatusCreated, newAlbum)
+	context.IndentedJSON(http.StatusCreated, newAlbum)
 }
