@@ -5,20 +5,31 @@ import (
 	"net/http"
 	"strconv"
 
-	albumdao "example/data-access/dao"
+	albumDao "example/data-access/dao"
 	entity "example/data-access/entity"
 
 	"github.com/gin-gonic/gin"
 )
 
-var db *sql.DB
-
-func SetConnection(_db *sql.DB) {
-	db = _db
+type AlbumController interface {
+	GetAlbums(c *gin.Context)
+	GetAlbumById(c *gin.Context)
+	DeleteAlbumById(c *gin.Context)
+	PostAlbums(c *gin.Context)
 }
 
-func GetAlbums(c *gin.Context) {
-	albums, err := albumdao.FindAllAlbums(db)
+type albumController struct {
+	db *sql.DB
+}
+
+func NewAlbumController(_db *sql.DB) AlbumController {
+	return &albumController{
+		db: _db,
+	}
+}
+
+func (controller *albumController) GetAlbums(c *gin.Context) {
+	albums, err := albumDao.FindAllAlbums(controller.db)
 	if err != nil {
 		c.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
@@ -26,7 +37,7 @@ func GetAlbums(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, albums)
 }
 
-func GetAlbumById(c *gin.Context) {
+func (controller *albumController) GetAlbumById(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 0, 64)
 
 	if err != nil {
@@ -36,7 +47,7 @@ func GetAlbumById(c *gin.Context) {
 		return
 	}
 
-	album, errDb := albumdao.FindAlbumById(db, id)
+	album, errDb := albumDao.FindAlbumById(controller.db, id)
 	if errDb != nil {
 		msgErrorStr := errDb.Error() //pega a mensagem de erro retornada
 		c.IndentedJSON(http.StatusFound, gin.H{"message": msgErrorStr})
@@ -45,7 +56,7 @@ func GetAlbumById(c *gin.Context) {
 	c.IndentedJSON(http.StatusOK, album)
 }
 
-func DeleteAlbumById(c *gin.Context) {
+func (controller *albumController) DeleteAlbumById(c *gin.Context) {
 	id, err := strconv.ParseInt(c.Param("id"), 0, 64)
 
 	if err != nil {
@@ -53,7 +64,7 @@ func DeleteAlbumById(c *gin.Context) {
 		return
 	}
 
-	deleted, err := albumdao.RemoveAlbum(db, id)
+	deleted, err := albumDao.RemoveAlbum(controller.db, id)
 
 	if err != nil {
 		c.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
@@ -67,7 +78,7 @@ func DeleteAlbumById(c *gin.Context) {
 	c.IndentedJSON(http.StatusCreated, gin.H{"message": "Registro excluído com sucesso!"})
 }
 
-func PostAlbums(c *gin.Context) {
+func (controller *albumController) PostAlbums(c *gin.Context) {
 	var newAlbum entity.Album
 
 	//faz o paser do Json e alimenta na variável newAlbum
@@ -75,7 +86,7 @@ func PostAlbums(c *gin.Context) {
 		return
 	}
 
-	id, err := albumdao.SaveAlbum(db, newAlbum)
+	id, err := albumDao.SaveAlbum(controller.db, newAlbum)
 	if err != nil {
 		c.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
