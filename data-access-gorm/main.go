@@ -8,13 +8,18 @@ import (
 	"example/data-access/conf"
 
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 
 	albumapi "example/data-access/api"
 )
 
 var db *sql.DB
+var dbGorm *gorm.DB
 
 func main() {
+
+	dbGorm = conf.SetupDatabase()
+
 	db = conf.Connection()
 	albumapi.SetConnection(db)
 
