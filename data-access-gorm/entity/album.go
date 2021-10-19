@@ -6,4 +6,5 @@ type Album struct {
 	Title  string  `json:"title"`
 	Artist string  `json:"artist"`
 	Price  float32 `json:"price"`
+	Stock  int64   `json:"stock"`
 }

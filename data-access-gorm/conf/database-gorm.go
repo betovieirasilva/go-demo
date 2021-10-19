@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"example/data-access/entity"
 	"log"
 
 	"gorm.io/driver/mysql"
@@ -16,7 +17,7 @@ func SetupDatabaseGorm() *gorm.DB {
 		log.Fatal(err) //exit
 	}
 
-	//db.AutoMigrate(&entity.Book{})
+	db.AutoMigrate(&entity.Album{})
 
 	return db
 }

@@ -76,7 +76,7 @@ func (dao *albumDao) Save(album entity.Album) (int64, error) {
 }
 
 func insert(db *sql.DB, album entity.Album) (int64, error) {
-	result, err := db.Exec("INSERT INTO albums (title, artist, price) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price)
+	result, err := db.Exec("INSERT INTO albums (title, artist, price, stock) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price, album.Stock)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao inserir um registro em album %v", err)
 	}
@@ -89,7 +89,7 @@ func insert(db *sql.DB, album entity.Album) (int64, error) {
 }
 
 func update(db *sql.DB, album entity.Album) (int64, error) {
-	result, err := db.Exec("UPDATE albums set title = ?, artist = ?, price = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID)
+	result, err := db.Exec("UPDATE albums set title = ?, artist = ?, price = ?, stock = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID, album.Stock)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao atualizar um registro em album %v", err)
 	}
