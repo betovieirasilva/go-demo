@@ -81,9 +81,17 @@ func (c *albumController) PostAlbums(context *gin.Context) {
 	var newAlbum entity.Album
 
 	//faz o parser do Json e alimenta na variável newAlbum
+	//BindJSON => Já executa o validadot por padrão
 	if err := context.BindJSON(&newAlbum); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
+	//executa o Validator manualmente, se for necessário
+	/*if err := context.ShouldBindWith(&newAlbum, binding.Query); err != nil {
+		context.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}*/
 
 	id, err := c.albumService.Save(newAlbum)
 	if err != nil {
