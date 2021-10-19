@@ -14,7 +14,7 @@ import (
 	"example/data-access/service"
 )
 
-var dbSql *sql.DB
+var dbSqlConnection *sql.DB
 var dbGormConnection *gorm.DB
 var albumService service.AlbumService
 
@@ -22,10 +22,10 @@ func main() {
 
 	dbGormConnection = conf.SetupDatabaseGorm()
 
-	dbSql = conf.SetupDatabaseSqlDB()
+	dbSqlConnection = conf.SetupDatabaseSqlDB()
 
 	//TODO: [Giba] Implementar um provider de teste para enrtregar uma ou outra implementação do service
-	//albumService := service.NewAlbumServiceSql(dbSql)
+	//albumService := service.NewAlbumServiceSql(dbSqlConnection)
 	//albumController := controller.NewAlbumController(albumService)
 
 	albumService = service.NewAlbumServiceGorm(dbGormConnection)
