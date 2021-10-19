@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	albumController "example/data-access/controller"
+	controller "example/data-access/controller"
 )
 
 var db *sql.DB
@@ -19,9 +19,9 @@ var dbGorm *gorm.DB
 func main() {
 
 	dbGorm = conf.SetupDatabase()
-
 	db = conf.Connection()
-	albumController.SetConnection(db)
+
+	albumController := controller.NewAlbumController(db)
 
 	//Routers da aplicação
 	router := gin.Default()
