@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"database/sql"
 	"net/http"
 	"strconv"
 
@@ -22,9 +21,9 @@ type albumController struct {
 	albumService service.AlbumService
 }
 
-func NewAlbumController(_db *sql.DB) AlbumController {
+func NewAlbumController(_albumService service.AlbumService) AlbumController {
 	return &albumController{
-		albumService: service.NewAlbumService(_db),
+		albumService: _albumService,
 	}
 }
 
