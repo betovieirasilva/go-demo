@@ -10,7 +10,7 @@ import (
 
 var db *sql.DB
 
-func Connection() *sql.DB {
+func SetupDatabaseSqlDB() *sql.DB {
 	// Create connection
 	//From => https://pkg.go.dev/github.com/go-sql-driver/mysql#Config
 	cfg := mysql.Config{

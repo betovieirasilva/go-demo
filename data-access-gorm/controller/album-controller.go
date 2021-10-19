@@ -6,7 +6,7 @@ import (
 	"strconv"
 
 	"example/data-access/dao"
-	entity "example/data-access/entity"
+	"example/data-access/entity"
 
 	"github.com/gin-gonic/gin"
 )

@@ -13,15 +13,15 @@ import (
 	"example/data-access/controller"
 )
 
-var db *sql.DB
+var dbSql *sql.DB
 var dbGorm *gorm.DB
 
 func main() {
 
-	dbGorm = conf.SetupDatabase()
-	db = conf.Connection()
+	dbGorm = conf.SetupDatabaseGorm()
+	dbSql = conf.SetupDatabaseSqlDB()
 
-	albumController := controller.NewAlbumController(db)
+	albumController := controller.NewAlbumController(dbSql)
 
 	//Routers da aplicação
 	router := gin.Default()
