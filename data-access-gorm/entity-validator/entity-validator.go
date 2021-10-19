@@ -35,6 +35,8 @@ func albumValidation(sl validator.StructLevel) {
 		sl.ReportError(album.Artist, "Artist", "", "AlbumValidation", "")
 	} else if len(album.Title) == 0 {
 		sl.ReportError(album.Title, "Title", "", "AlbumValidation", "")
+	} else if album.Price < 1 {
+		sl.ReportError(album.Price, "Price", "1", "AlbumValidation", "...")
 	}
 }
 
