@@ -22,8 +22,11 @@ func main() {
 	dbGorm = conf.SetupDatabaseGorm()
 	dbSql = conf.SetupDatabaseSqlDB()
 
-	albumServiceSql := service.NewAlbumServiceSql(dbSql)
-	albumController := controller.NewAlbumController(albumServiceSql)
+	//albumServiceSql := service.NewAlbumServiceSql(dbSql)
+	//albumController := controller.NewAlbumController(albumServiceSql)
+
+	albumServiceGorm := service.NewAlbumServiceSql(dbSql)
+	albumController := controller.NewAlbumController(albumServiceGorm)
 
 	//Routers da aplicação
 	router := gin.Default()

@@ -14,7 +14,6 @@ type AlbumService interface {
 	Remove(id int64) (bool, error)
 }
 
-//TODO: [Giba] Refatorar movendo para outro arquivo
 type albumServiceSql struct {
 	albumDao dao.AlbumDao
 }
@@ -25,18 +24,12 @@ func NewAlbumServiceSql(_db *sql.DB) AlbumService {
 	}
 }
 
-func (service *albumServiceSql) FindById(id int64) (entity.Album, error) {
-	return service.albumDao.FindById(id)
+type albumServiceGorm struct {
+	albumDao dao.AlbumDao
 }
 
-func (service *albumServiceSql) FindAll() ([]entity.Album, error) {
-	return service.albumDao.FindAll()
-}
-
-func (service *albumServiceSql) Save(album entity.Album) (int64, error) {
-	return service.albumDao.Save(album)
-}
-
-func (service *albumServiceSql) Remove(id int64) (bool, error) {
-	return service.albumDao.Remove(id)
+func NewAlbumServiceGorm(_db *sql.DB) AlbumService {
+	return &albumServiceGorm{
+		albumDao: dao.NewAlbumDao(_db),
+	}
 }
