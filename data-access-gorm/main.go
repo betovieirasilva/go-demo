@@ -10,7 +10,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 
-	controller "example/data-access/controller"
+	"example/data-access/controller"
 )
 
 var db *sql.DB

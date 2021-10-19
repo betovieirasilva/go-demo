@@ -8,10 +8,10 @@ import (
 )
 
 type AlbumDao interface {
-	FindAlbumById(id int64) (entity.Album, error)
-	FindAlbumAll() ([]entity.Album, error)
-	SaveAlbum(album entity.Album) (int64, error)
-	RemoveAlbum(id int64) (bool, error)
+	FindById(id int64) (entity.Album, error)
+	FindAll() ([]entity.Album, error)
+	Save(album entity.Album) (int64, error)
+	Remove(id int64) (bool, error)
 }
 
 type albumDao struct {
@@ -24,7 +24,7 @@ func NewAlbumDao(_db *sql.DB) AlbumDao {
 	}
 }
 
-func (dao *albumDao) FindAlbumById(id int64) (entity.Album, error) {
+func (dao *albumDao) FindById(id int64) (entity.Album, error) {
 	var album entity.Album
 
 	row := dao.db.QueryRow("SELECT * from album WHERE id = ?", id)
@@ -38,7 +38,7 @@ func (dao *albumDao) FindAlbumById(id int64) (entity.Album, error) {
 	return album, nil
 }
 
-func (dao *albumDao) FindAlbumAll() ([]entity.Album, error) {
+func (dao *albumDao) FindAll() ([]entity.Album, error) {
 	var albums []entity.Album
 
 	rows, err := dao.db.Query("SELECT * FROM album WHERE 1 = ? ORDER BY id ASC", 1) //param = 1 apenas para facilitar os testes com lista vazia (informe 2 para lista vazia)
@@ -68,7 +68,7 @@ func (dao *albumDao) FindAlbumAll() ([]entity.Album, error) {
 	return albums, nil
 }
 
-func (dao *albumDao) SaveAlbum(album entity.Album) (int64, error) {
+func (dao *albumDao) Save(album entity.Album) (int64, error) {
 	if album.ID != 0 { //primitive value is zero by default
 		return update(dao.db, album)
 	}
@@ -106,7 +106,7 @@ func update(db *sql.DB, album entity.Album) (int64, error) {
 	return album.ID, nil //retorn album.ID por padrão para facilitar seu uso no save
 }
 
-func (dao *albumDao) RemoveAlbum(id int64) (bool, error) {
+func (dao *albumDao) Remove(id int64) (bool, error) {
 	result, err := dao.db.Exec("DELETE FROM album WHERE id = ?", id)
 	if err != nil {
 		return false, fmt.Errorf("Erro ao excluir o registro do album %v", err)

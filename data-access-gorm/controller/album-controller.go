@@ -29,7 +29,7 @@ func NewAlbumController(_db *sql.DB) AlbumController {
 }
 
 func (c *albumController) GetAlbums(context *gin.Context) {
-	albums, err := c.albumDao.FindAlbumAll()
+	albums, err := c.albumDao.FindAll()
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
@@ -47,7 +47,7 @@ func (c *albumController) GetAlbumById(context *gin.Context) {
 		return
 	}
 
-	album, errDb := c.albumDao.FindAlbumById(id)
+	album, errDb := c.albumDao.FindById(id)
 	if errDb != nil {
 		msgErrorStr := errDb.Error() //pega a mensagem de erro retornada
 		context.IndentedJSON(http.StatusFound, gin.H{"message": msgErrorStr})
@@ -64,7 +64,7 @@ func (c *albumController) DeleteAlbumById(context *gin.Context) {
 		return
 	}
 
-	deleted, err := c.albumDao.RemoveAlbum(id)
+	deleted, err := c.albumDao.Remove(id)
 
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
@@ -86,7 +86,7 @@ func (c *albumController) PostAlbums(context *gin.Context) {
 		return
 	}
 
-	id, err := c.albumDao.SaveAlbum(newAlbum)
+	id, err := c.albumDao.Save(newAlbum)
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
