@@ -24,6 +24,7 @@ func main() {
 
 	dbSql = conf.SetupDatabaseSqlDB()
 
+	//TODO: [Giba] Implementar um provider de teste para enrtregar uma ou outra implementação do service
 	//albumService := service.NewAlbumServiceSql(dbSql)
 	//albumController := controller.NewAlbumController(albumService)
 
