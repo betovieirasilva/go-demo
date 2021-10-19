@@ -5,6 +5,8 @@ import (
 
 	"example/data-access/dao"
 	"example/data-access/entity"
+
+	"gorm.io/gorm"
 )
 
 type AlbumService interface {
@@ -25,11 +27,11 @@ func NewAlbumServiceSql(_db *sql.DB) AlbumService {
 }
 
 type albumServiceGorm struct {
-	albumDao dao.AlbumDao
+	conn *gorm.DB
 }
 
-func NewAlbumServiceGorm(_db *sql.DB) AlbumService {
+func NewAlbumServiceGorm(_conn *gorm.DB) AlbumService {
 	return &albumServiceGorm{
-		albumDao: dao.NewAlbumDao(_db),
+		conn: _conn,
 	}
 }

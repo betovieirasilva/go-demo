@@ -27,12 +27,12 @@ func NewAlbumDao(_db *sql.DB) AlbumDao {
 func (dao *albumDao) FindById(id int64) (entity.Album, error) {
 	var album entity.Album
 
-	row := dao.db.QueryRow("SELECT * from album WHERE id = ?", id)
+	row := dao.db.QueryRow("SELECT * from albums WHERE id = ?", id)
 	if err := row.Scan(&album.ID, &album.Title, &album.Artist, &album.Price); err != nil {
 		if err == sql.ErrNoRows {
-			return album, fmt.Errorf("Não existe um album com o ID %d", id) //fmt.Errorf => transforma a mensagem em um erro
+			return album, fmt.Errorf("Não existe um albums com o ID %d", id) //fmt.Errorf => transforma a mensagem em um erro
 		}
-		return album, fmt.Errorf("Erro ao buscar o algum com ID %d: %v", id, err)
+		return album, fmt.Errorf("Erro ao buscar o albums com ID %d: %v", id, err)
 	}
 	//retorna o registro encontrato
 	return album, nil
@@ -41,7 +41,7 @@ func (dao *albumDao) FindById(id int64) (entity.Album, error) {
 func (dao *albumDao) FindAll() ([]entity.Album, error) {
 	var albums []entity.Album
 
-	rows, err := dao.db.Query("SELECT * FROM album WHERE 1 = ? ORDER BY id ASC", 1) //param = 1 apenas para facilitar os testes com lista vazia (informe 2 para lista vazia)
+	rows, err := dao.db.Query("SELECT * FROM albums WHERE 1 = ? ORDER BY id ASC", 1) //param = 1 apenas para facilitar os testes com lista vazia (informe 2 para lista vazia)
 	if err != nil {
 		return nil, fmt.Errorf("Erro ao buscar os registros de Albums. %v", err)
 	}
@@ -76,7 +76,7 @@ func (dao *albumDao) Save(album entity.Album) (int64, error) {
 }
 
 func insert(db *sql.DB, album entity.Album) (int64, error) {
-	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price)
+	result, err := db.Exec("INSERT INTO albums (title, artist, price) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao inserir um registro em album %v", err)
 	}
@@ -89,7 +89,7 @@ func insert(db *sql.DB, album entity.Album) (int64, error) {
 }
 
 func update(db *sql.DB, album entity.Album) (int64, error) {
-	result, err := db.Exec("UPDATE album set title = ?, artist = ?, price = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID)
+	result, err := db.Exec("UPDATE albums set title = ?, artist = ?, price = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao atualizar um registro em album %v", err)
 	}
@@ -107,7 +107,7 @@ func update(db *sql.DB, album entity.Album) (int64, error) {
 }
 
 func (dao *albumDao) Remove(id int64) (bool, error) {
-	result, err := dao.db.Exec("DELETE FROM album WHERE id = ?", id)
+	result, err := dao.db.Exec("DELETE FROM albums WHERE id = ?", id)
 	if err != nil {
 		return false, fmt.Errorf("Erro ao excluir o registro do album %v", err)
 	}
