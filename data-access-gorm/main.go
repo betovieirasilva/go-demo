@@ -26,9 +26,8 @@ func main() {
 
 	//TODO: [Giba] Implementar um provider de teste para enrtregar uma ou outra implementação do service
 	//albumService := service.NewAlbumServiceSql(dbSqlConnection)
-	//albumController := controller.NewAlbumController(albumService)
-
 	albumService = service.NewAlbumServiceGorm(dbGormConnection)
+
 	albumController := controller.NewAlbumController(albumService)
 
 	//Routers da aplicação
