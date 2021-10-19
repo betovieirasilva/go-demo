@@ -16,17 +16,18 @@ import (
 
 var dbSql *sql.DB
 var dbGorm *gorm.DB
+var albumService service.AlbumService
 
 func main() {
 
 	dbGorm = conf.SetupDatabaseGorm()
 	dbSql = conf.SetupDatabaseSqlDB()
 
-	//albumServiceSql := service.NewAlbumServiceSql(dbSql)
-	//albumController := controller.NewAlbumController(albumServiceSql)
+	//albumService := service.NewAlbumServiceSql(dbSql)
+	//albumController := controller.NewAlbumController(albumService)
 
-	albumServiceGorm := service.NewAlbumServiceSql(dbSql)
-	albumController := controller.NewAlbumController(albumServiceGorm)
+	albumService = service.NewAlbumServiceGorm(dbSql)
+	albumController := controller.NewAlbumController(albumService)
 
 	//Routers da aplicação
 	router := gin.Default()
