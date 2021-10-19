@@ -1,4 +1,4 @@
-package model
+package entity
 
 //vars
 type Album struct {

@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	albumDao "example/data-access/dao"
+	"example/data-access/dao"
 	entity "example/data-access/entity"
 
 	"github.com/gin-gonic/gin"
@@ -19,17 +19,17 @@ type AlbumController interface {
 }
 
 type albumController struct {
-	db *sql.DB
+	albumDao dao.AlbumDao
 }
 
 func NewAlbumController(_db *sql.DB) AlbumController {
 	return &albumController{
-		db: _db,
+		albumDao: dao.NewAlbumDao(_db),
 	}
 }
 
 func (c *albumController) GetAlbums(context *gin.Context) {
-	albums, err := albumDao.FindAllAlbums(c.db)
+	albums, err := c.albumDao.FindAllAlbums()
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
@@ -47,7 +47,7 @@ func (c *albumController) GetAlbumById(context *gin.Context) {
 		return
 	}
 
-	album, errDb := albumDao.FindAlbumById(c.db, id)
+	album, errDb := c.albumDao.FindAlbumById(id)
 	if errDb != nil {
 		msgErrorStr := errDb.Error() //pega a mensagem de erro retornada
 		context.IndentedJSON(http.StatusFound, gin.H{"message": msgErrorStr})
@@ -64,7 +64,7 @@ func (c *albumController) DeleteAlbumById(context *gin.Context) {
 		return
 	}
 
-	deleted, err := albumDao.RemoveAlbum(c.db, id)
+	deleted, err := c.albumDao.RemoveAlbum(id)
 
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
@@ -86,7 +86,7 @@ func (c *albumController) PostAlbums(context *gin.Context) {
 		return
 	}
 
-	id, err := albumDao.SaveAlbum(c.db, newAlbum)
+	id, err := c.albumDao.SaveAlbum(newAlbum)
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
