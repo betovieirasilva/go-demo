@@ -9,7 +9,7 @@ import (
 
 type AlbumDao interface {
 	FindAlbumById(id int64) (entity.Album, error)
-	FindAllAlbums() ([]entity.Album, error)
+	FindAlbumAll() ([]entity.Album, error)
 	SaveAlbum(album entity.Album) (int64, error)
 	RemoveAlbum(id int64) (bool, error)
 }
@@ -38,7 +38,7 @@ func (dao *albumDao) FindAlbumById(id int64) (entity.Album, error) {
 	return album, nil
 }
 
-func (dao *albumDao) FindAllAlbums() ([]entity.Album, error) {
+func (dao *albumDao) FindAlbumAll() ([]entity.Album, error) {
 	var albums []entity.Album
 
 	rows, err := dao.db.Query("SELECT * FROM album WHERE 1 = ? ORDER BY id ASC", 1) //param = 1 apenas para facilitar os testes com lista vazia (informe 2 para lista vazia)
@@ -70,12 +70,12 @@ func (dao *albumDao) FindAllAlbums() ([]entity.Album, error) {
 
 func (dao *albumDao) SaveAlbum(album entity.Album) (int64, error) {
 	if album.ID != 0 { //primitive value is zero by default
-		return updateAlbum(dao.db, album)
+		return update(dao.db, album)
 	}
-	return insertAlbum(dao.db, album)
+	return insert(dao.db, album)
 }
 
-func insertAlbum(db *sql.DB, album entity.Album) (int64, error) {
+func insert(db *sql.DB, album entity.Album) (int64, error) {
 	result, err := db.Exec("INSERT INTO album (title, artist, price) VALUES(?, ?, ?)", album.Title, album.Artist, album.Price)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao inserir um registro em album %v", err)
@@ -88,7 +88,7 @@ func insertAlbum(db *sql.DB, album entity.Album) (int64, error) {
 	return id, nil
 }
 
-func updateAlbum(db *sql.DB, album entity.Album) (int64, error) {
+func update(db *sql.DB, album entity.Album) (int64, error) {
 	result, err := db.Exec("UPDATE album set title = ?, artist = ?, price = ? WHERE id = ?", album.Title, album.Artist, album.Price, album.ID)
 	if err != nil {
 		return 0, fmt.Errorf("Erro ao atualizar um registro em album %v", err)

@@ -29,7 +29,7 @@ func NewAlbumController(_db *sql.DB) AlbumController {
 }
 
 func (c *albumController) GetAlbums(context *gin.Context) {
-	albums, err := c.albumDao.FindAllAlbums()
+	albums, err := c.albumDao.FindAlbumAll()
 	if err != nil {
 		context.IndentedJSON(http.StatusFound, gin.H{"message": err.Error()})
 		return
@@ -81,7 +81,7 @@ func (c *albumController) DeleteAlbumById(context *gin.Context) {
 func (c *albumController) PostAlbums(context *gin.Context) {
 	var newAlbum entity.Album
 
-	//faz o paser do Json e alimenta na variável newAlbum
+	//faz o parser do Json e alimenta na variável newAlbum
 	if err := context.BindJSON(&newAlbum); err != nil {
 		return
 	}
