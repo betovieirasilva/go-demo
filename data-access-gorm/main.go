@@ -11,6 +11,7 @@ import (
 	"gorm.io/gorm"
 
 	"example/data-access/controller"
+	"example/data-access/service"
 )
 
 var dbSql *sql.DB
@@ -21,7 +22,8 @@ func main() {
 	dbGorm = conf.SetupDatabaseGorm()
 	dbSql = conf.SetupDatabaseSqlDB()
 
-	albumController := controller.NewAlbumController(dbSql)
+	albumService := service.NewAlbumService(dbSql)
+	albumController := controller.NewAlbumController(albumService)
 
 	//Routers da aplicação
 	router := gin.Default()
