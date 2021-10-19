@@ -1,6 +1,8 @@
 package entityvalidator
 
 import (
+	"example/data-access/entity"
+
 	"github.com/gin-gonic/gin/binding"
 	"github.com/go-playground/validator/v10"
 )
@@ -16,7 +18,7 @@ func NewEntityValidator() EntityValidator {
 	return &entityValidator{}
 }
 
-var stockValidator validator.Func = func(fl validator.FieldLevel) bool {
+var albumStockValidator validator.Func = func(fl validator.FieldLevel) bool {
 	stock, ok := fl.Field().Interface().(int64)
 	if ok {
 		stockMin := 10 //fixo apenas para testes
@@ -27,9 +29,19 @@ var stockValidator validator.Func = func(fl validator.FieldLevel) bool {
 	return true
 }
 
+func albumValidation(sl validator.StructLevel) {
+	album := sl.Current().Interface().(entity.Album)
+	if len(album.Artist) == 0 {
+		sl.ReportError(album.Artist, "Artist", "", "AlbumValidation", "")
+	} else if len(album.Title) == 0 {
+		sl.ReportError(album.Title, "Title", "", "AlbumValidation", "")
+	}
+}
+
 func (ev *entityValidator) Register() {
 	v, ok := binding.Validator.Engine().(*validator.Validate)
 	if ok {
-		v.RegisterValidation("stockValidator", stockValidator)
+		v.RegisterValidation("stockValidator", albumStockValidator)
+		v.RegisterStructValidation(albumValidation, entity.Album{})
 	}
 }
