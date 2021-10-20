@@ -21,17 +21,24 @@ var dbSqlConnection *sql.DB
 var dbGormConnection *gorm.DB
 var albumService service.AlbumService
 
+func printRawJson(c *gin.Context) {
+	// Ao pegar o JSON com Raw gera EOF nas próximas fases da requisição quando delamos a conversão para o serviço e não realizar uma cópia do context
+	// => https://gin-gonic.com/docs/examples/goroutines-inside-a-middleware/ [Ver melhor, deixar para o final]
+	cCopy := c.Copy()
+	jsonData, err := cCopy.GetRawData()
+	if err != nil {
+		log.Println("Error: ", err)
+	}
+	log.Print("#PATH    => ", cCopy.Request.URL.Path)
+	log.Print("#RawJSON => ", string(jsonData))
+}
+
 func LoggerHandlerDefault() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		//TODO: Entender porque ao pegar o JSON com Raw gera EOF nas próximas fases da requisição quando delamos a conversão para o serviço
-		/*
-			jsonData, err := c.GetRawData()
-			if err != nil {
-				log.Println("Error: ", err)
-			}
-			log.Print("#Before request  RawJSON=> ", string(jsonData))
-		*/
 		log.Println("#Before request")
+
+		//printRawJson(c)
+
 		t := time.Now()
 
 		// Set example variable context
